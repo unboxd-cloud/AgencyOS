@@ -1,0 +1,46 @@
+hybrid_cloud:
+  provider: "aws"
+  enabled: true
+  
+  connection:
+    connection_type: "direct"
+    
+    direct_connect:
+      enabled: true
+      vlan_id: 100
+      bgp_asn: 65001
+      partner_name: "cloudstack-aws-hybrid"
+      
+    vpn:
+      enabled: false
+      tunnel_config:
+        - tunnel_id: 1
+          peer_ip: "203.0.113.1"
+          psk: "${AWS_VPN_PSK}"
+  
+  routing:
+    prefix_lists:
+      - name: "cloudstack-internal"
+        prefixes: 
+          - "10.0.0.0/8"
+      - name: "aws-vpc"
+        prefixes:
+          - "172.16.0.0/12"
+    
+    route_tables:
+      - name: "hybrid-rt"
+        routes:
+          - destination: "0.0.0.0/0"
+            target: "direct-connect"
+          - destination: "172.16.0.0/12"
+            target: "direct-connect"
+
+  dns:
+    enabled: true
+    route53:
+      hosted_zone: "hybrid.cloudstack.local"
+
+  iam:
+    enabled: true
+    role: "CloudStackHybridRole"
+    policy: "CloudStackHybridPolicy"

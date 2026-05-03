@@ -1,0 +1,30 @@
+cloudstack:
+  version: "4.18.0"
+  management_server:
+    host: "localhost"
+    port: 8096
+    api_key: "${CLOUDSTACK_API_KEY}"
+    secret_key: "${CLOUDSTACK_SECRET_KEY}"
+  
+  database:
+    host: "localhost"
+    port: 3306
+    name: "cloud"
+    username: "cloud"
+    password: "${CLOUDSTACK_DB_PASSWORD}"
+  
+  security:
+    api_scheme: "https"
+    cert_path: "/etc/cloudstack/ssl/cert.pem"
+    key_path: "/etc/cloudstack/ssl/key.pem"
+  
+  logging:
+    level: "INFO"
+    format: "json"
+    aggregation:
+      enabled: true
+      backend: "elasticsearch"
+      elasticsearch:
+        hosts:
+          - "localhost:9200"
+        index_prefix: "cloudstack"
